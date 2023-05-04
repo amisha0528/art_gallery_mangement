@@ -1,0 +1,892 @@
+CREATE TABLE GALLERY
+            (GID VARCHAR(20) PRIMARY KEY,
+            GNAME VARCHAR(20) NOT NULL,
+            LOCATION VARCHAR(20)NOT NULL);
+desc GALLERY;
+
+CREATE TABLE EXHIBITION
+            (EID VARCHAR(20) PRIMARY KEY,
+            GID VARCHAR(20) DEFAULT NULL,
+            STARTDATE DATE DEFAULT NULL,
+            ENDDATE DATE DEFAULT NULL,
+            FOREIGN KEY(GID) REFERENCES GALLERY(GID) ON DELETE CASCADE, CHECK(ENDDATE>STARTDATE));
+DESC EXHIBITION;
+
+CREATE TABLE CUSTOMER 
+           (CUSTID VARCHAR(20) PRIMARY KEY,
+           GID VARCHAR(20) DEFAULT NULL,
+           FNAME VARCHAR(20) DEFAULT NULL,
+           LNAME VARCHAR(20)DEFAULT NULL,
+           DOB DATE DEFAULT NULL,
+           ADDRESS VARCHAR(50)DEFAULT NULL,
+           FOREIGN KEY(GID) REFERENCES GALLERY(GID)ON DELETE CASCADE);
+DESC CUSTOMER;
+
+CREATE TABLE ARTIST
+         (ARTISTID VARCHAR(20) PRIMARY KEY,
+         GID VARCHAR(20)DEFAULT NULL,
+         CUSTID VARCHAR(20)DEFAULT NULL,
+         EID VARCHAR(20)DEFAULT NULL,
+         FNAME VARCHAR(20)NOT NULL,
+         LNAME VARCHAR(20)DEFAULT NULL,
+         BIRTHPLACE VARCHAR(20)DEFAULT NULL,
+        FOREIGN KEY(GID) REFERENCES GALLERY(GID)ON DELETE CASCADE,
+        FOREIGN KEY (CUSTID) REFERENCES CUSTOMER(CUSTID)ON DELETE CASCADE,
+        FOREIGN KEY(EID) REFERENCES EXHIBITION(EID)ON DELETE CASCADE);
+DESC ARTIST;
+
+CREATE TABLE ARTWORK
+            (ARTID VARCHAR(20) PRIMARY KEY,
+            ARTISTID VARCHAR(20) DEFAULT NULL,
+            TITLE VARCHAR(20) NOT NULL,
+            YEAR INT DEFAULT NULL,
+            TYPE_OF_ART VARCHAR(20) DEFAULT NULL,
+            PRICE INT DEFAULT NULL,
+            EID VARCHAR(20)DEFAULT NULL, 
+            GID VARCHAR(20)DEFAULT NULL,
+             FOREIGN KEY(EID) REFERENCES EXHIBITION(EID)ON DELETE CASCADE,
+            FOREIGN KEY(GID) REFERENCES GALLERY(GID)ON DELETE CASCADE,
+            FOREIGN KEY(ARTISTID) REFERENCES ARTIST(ARTISTID) ON DELETE CASCADE);
+DESC ARTWORK;
+
+CREATE TABLE ARTIST_STYLES
+           (ARTISTID VARCHAR(20),
+           STYLE VARCHAR(20), 
+           PRIMARY KEY(ARTISTID,STYLE),
+           FOREIGN KEY(ARTISTID) REFERENCES ARTIST(ARTISTID)ON DELETE CASCADE);
+DESC ARTIST_STYLES; 
+
+
+CREATE TABLE CUST_CONTACTS
+           (CUSTID VARCHAR(20),
+           CONTACTS NUMBER(10),
+           PRIMARY KEY(CUSTID,CONTACTS),
+           FOREIGN KEY(CUSTID)REFERENCES CUSTOMER(CUSTID)ON DELETE CASCADE);
+DESC CUST_CONTACTS;
+
+CREATE TABLE BUYS
+          (CUSTID VARCHAR(20),
+          ARTID VARCHAR(20),
+          PRIMARY KEY(CUSTID,ARTID),
+          FOREIGN KEY(ARTID) REFERENCES ARTWORK(ARTID)ON DELETE CASCADE,
+          FOREIGN KEY(CUSTID)REFERENCES CUSTOMER(CUSTID) ON DELETE CASCADE);
+DESC BUYS;
+
+
+
+INSERT INTO GALLERY VALUES('NG123','National Gallery', 'Washington');
+INSERT INTO GALLERY VALUES('BM123','British Museum', 'London');
+INSERT INTO GALLERY VALUES('JG123','Jahangir Gallery', 'Mumbai');
+INSERT INTO GALLERY VALUES('TLM123','The Louvre Museum', 'Paris');
+INSERT INTO GALLERY VALUES('MM123','Metropolitan Museum', 'New York');
+INSERT INTO GALLERY VALUES('AG123','Artchill Gallery', 'Jaipur'); 
+INSERT INTO GALLERY VALUES('KAC123','Kashi Art Cafe', 'Kochi'); 
+INSERT INTO GALLERY VALUES('DAG123','Darpan Art Gallery', 'Pune');
+INSERT INTO GALLERY VALUES('TAG123','Treasure Art Gallery', 'Delhi');
+INSERT INTO GALLERY VALUES('IM123','Indian Museum', 'Kolkata');
+
+select * FROM GALLERY;
+
+INSERT INTO EXHIBITION VALUES('G123','NG123','15-JUL-2022','30-JUL-2022');
+INSERT INTO EXHIBITION VALUES('H123','BM123','21-AUG-2022','9-SEP-2022');
+INSERT INTO EXHIBITION VALUES('I123','MM123','12-SEP-2022','25-SEP-2022');
+INSERT INTO EXHIBITION VALUES('J123','TLM123','9-OCT-2022','20-OCT-2022');
+INSERT INTO EXHIBITION VALUES('K123','JG123','7-NOV-2022','15-NOV-2022');
+INSERT INTO EXHIBITION VALUES('L123','AG123','19-NOV-2022','30-NOV-2022');
+INSERT INTO EXHIBITION VALUES('M123','DAG123','2-DEC-2022','17-DEC-2022');
+INSERT INTO EXHIBITION VALUES('N123','TAG123','24-DEC-2022','7-JAN-2023');
+INSERT INTO EXHIBITION VALUES('O123','IM123','11-JAN-2023','23-JAN-2023');
+INSERT INTO EXHIBITION VALUES('P123','KAC123','26-JAN-2023','8-FEB-2023');
+
+SELECT * FROM EXHIBITION;
+
+
+INSERT INTO CUSTOMER VALUES('AT2000','MM123','Akshay','Thakur','16-APR-2000','New York');
+INSERT INTO CUSTOMER VALUES('AR1998','TLM123','Ashutosh','Ranjan','4-FEB-1998','Paris');
+INSERT INTO CUSTOMER VALUES('AD1998','BM123','Ayush','Dhar','28-SEP-1998','London');
+INSERT INTO CUSTOMER VALUES('AM1994','JG123','Avanish','Mehta','5-OCT-1994','Mumbai');
+INSERT INTO CUSTOMER VALUES('JA1997','AG123','Jayant','Arora','7-NOV-1997','Jaipur'); 
+INSERT INTO CUSTOMER VALUES('AG1980','DAG123','Ayan','Gupta','23-DEC-1980','Pune'); 
+INSERT INTO CUSTOMER VALUES('AR1989','TAG123','Abhay','Raichand','17-JUL-1989','Delhi'); 
+INSERT INTO CUSTOMER VALUES('RK1984','KAC123','Ranbeer','Kohli','8-APR-1984','Kochi');
+INSERT INTO CUSTOMER VALUES('AS1996','IM123','Abhinav','Sharma','15-MAR-1996','Kolkata');
+INSERT INTO CUSTOMER VALUES('PM1988','NG123','Prashant','Mehta','18-JUN-1988','Washington');
+
+SELECT * FROM CUSTOMER;
+
+INSERT INTO ARTIST VALUES('ART1','MM123','AT2000','O123','Georgia','O Keeffe','USA');
+INSERT INTO ARTIST VALUES('ART2','TLM123','AR1998','P123','Pablo','Picasso','Spain');
+INSERT INTO ARTIST VALUES('ART3','BM123','AG1980','N123','Rembrandt','van Rijn','Netherlands');
+INSERT INTO ARTIST VALUES('ART4','IM123','AR1989','M123','Jamini','Roy','India');
+INSERT INTO ARTIST VALUES('ART5','TAG123','RK1984','L123','John','Lewin','Austrailia');
+INSERT INTO ARTIST VALUES('ART6','DAG123','AS1996','K123','Frans','Hals','Amsterdam');
+INSERT INTO ARTIST VALUES('ART7','AG123','JA1997','J123','Martin','Aagaard','Norway');
+INSERT INTO ARTIST VALUES('ART8','KAC123','AD1998','I123','Sieman','Allen','Africa');
+INSERT INTO ARTIST VALUES('ART9','JG123','AM1994','H123','Theodore','Chasseriau','France');
+INSERT INTO ARTIST VALUES('ART10','NG123','PM1988','G123','Leonardo','da Vinci','Italy');
+
+select * from ARTIST;
+
+
+INSERT INTO ARTWORK VALUES('AW12','ART1','Mona Lisa','1503','Painting',10000000,'G123','NG123');
+INSERT INTO ARTWORK VALUES('AW24','ART2','Poppies','1873','Painting',15000000,'H123','MM123');
+INSERT INTO ARTWORK VALUES('AW36','ART3','Guernica','1937','Painting',25000000,'I123','TLM123');
+INSERT INTO ARTWORK VALUES('AW48','ART4','The Last Supper','2003','Painting',9000000,'J123','BM123'); 
+INSERT INTO ARTWORK VALUES('AW60','ART5','The Starry Night','1750','Sculpture',350000000,'K123','AG123');
+INSERT INTO ARTWORK VALUES('AW66','ART6','Blessed Flair','1976','Painting',18000000,'L123','DAG123');
+INSERT INTO ARTWORK VALUES('AW72','ART7','Frivolous Reality','1800','Sculpture',60000000,'M123','TAG123'); 
+INSERT INTO ARTWORK VALUES('AW84','ART8','The Night Watch','2015','Painting',85000000,'N123','IM123');
+INSERT INTO ARTWORK VALUES('AW90','ART9','Gracious Despair','1642','Painting',95000000,'O123','KAC123');
+INSERT INTO ARTWORK VALUES('AW96','ART10','Two Sisters','2010','Sculpture',20000000,'P123','JG123');
+
+select * from ARTWORK;
+
+
+INSERT INTO ARTIST_STYLES VALUES('ART1','Oil on Canvas');
+INSERT INTO ARTIST_STYLES VALUES('ART2','Analytic Cubism');
+INSERT INTO ARTIST_STYLES VALUES('ART2','Impressionist');
+INSERT INTO ARTIST_STYLES VALUES ('ART3','Oil Painting');
+INSERT INTO ARTIST_STYLES VALUES ('ART4','Symbolism');
+INSERT INTO ARTIST_STYLES VALUES ('ART5','Pop Art');
+INSERT INTO ARTIST_STYLES VALUES('ART5','High Renaissance');
+INSERT INTO ARTIST_STYLES VALUES ('ART6','Expressionism');
+INSERT INTO ARTIST_STYLES VALUES ('ART7','Realism');
+INSERT INTO ARTIST_STYLES VALUES ('ART7','Oil Painting');
+INSERT INTO ARTIST_STYLES VALUES ('ART8','Figurative Art');
+INSERT INTO ARTIST_STYLES VALUES('ART9','Impressionist');
+INSERT INTO ARTIST_STYLES VALUES('ART10','High Renaissance');
+
+select * from ARTIST_STYLES;
+
+INSERT INTO CUST_CONTACTS VALUES ('AT2000',9888776655);
+INSERT INTO CUST_CONTACTS VALUES('AR1998',9888779833);
+INSERT INTO CUST_CONTACTS VALUES('AD1998',9464105896);
+INSERT INTO CUST_CONTACTS VALUES('AD1998',9418687197);
+INSERT INTO CUST_CONTACTS VALUES('AM1994',8558903748);
+INSERT INTO CUST_CONTACTS VALUES('JA1997',8699592111); 
+INSERT INTO CUST_CONTACTS VALUES('AG1980',9877041852); 
+INSERT INTO CUST_CONTACTS VALUES('AG1980',7973301703); 
+INSERT INTO CUST_CONTACTS VALUES('AR1989',7888388600); 
+INSERT INTO CUST_CONTACTS VALUES('RK1984',8699338830);
+INSERT INTO CUST_CONTACTS VALUES('AS1996',8284808651);
+INSERT INTO CUST_CONTACTS VALUES('PM1988',7814271491);
+INSERT INTO CUST_CONTACTS VALUES('PM1988',9815481127);
+
+SELECT * FROM CUST_CONTACTS ;
+
+
+INSERT INTO BUYS VALUES('AT2000','AW12');
+INSERT INTO BUYS VALUES('AT2000','AW60');
+INSERT INTO BUYS VALUES('AR1998','AW24');
+INSERT INTO BUYS VALUES('AD1998','AW36');
+INSERT INTO BUYS VALUES('AM1994','AW48');
+INSERT INTO BUYS VALUES('JA1997','AW60'); 
+INSERT INTO BUYS VALUES('AG1980','AW66'); 
+INSERT INTO BUYS VALUES('AR1989','AW72'); 
+INSERT INTO BUYS VALUES('RK1984','AW84');
+INSERT INTO BUYS VALUES('AS1996','AW90');
+INSERT INTO BUYS VALUES('PM1988','AW96');
+
+SELECT * FROM BUYS;
+
+
+
+
+
+
+
+
+
+
+
+
+-- ARTIST WITH THEIR STYLES
+CREATE OR REPLACE PROCEDURE display_artist_styles IS
+BEGIN
+  FOR artist_rec IN (SELECT a.ARTISTID, a.FNAME, a.LNAME, a.BIRTHPLACE, s.STYLE 
+                     FROM ARTIST a 
+                     JOIN ARTIST_STYLES s ON a.ARTISTID = s.ARTISTID 
+                     ORDER BY a.ARTISTID)
+  LOOP
+    DBMS_OUTPUT.PUT_LINE('Artist ID: ' || artist_rec.ARTISTID);
+    DBMS_OUTPUT.PUT_LINE('Name: ' || artist_rec.FNAME || ' ' || artist_rec.LNAME);
+    DBMS_OUTPUT.PUT_LINE('Birth Place: ' || artist_rec.BIRTHPLACE);
+    DBMS_OUTPUT.PUT_LINE('Style: ' || artist_rec.STYLE );
+    DBMS_OUTPUT.PUT_LINE('-----------------------------------------------------');
+  END LOOP;
+  EXCEPTION
+	WHEN no_data_found THEN
+  		DBMS_OUTPUT.PUT_LINE('!! no such record exits !! ');
+	WHEN TOO_MANY_ROWS THEN
+  		DBMS_OUTPUT.PUT_LINE('!! TOO MANY ROWS RECORD !! ');
+	WHEN others THEN 
+  		DBMS_OUTPUT.PUT_LINE(' !!  ERROR  !! ');
+END;
+/
+BEGIN
+  display_artist_styles;  
+END;
+/
+
+
+
+
+
+
+
+
+
+-- CUSTOMER WITH THEIR CONTACT NUMBER 
+CREATE OR REPLACE PROCEDURE display_customer_contacts IS
+BEGIN
+  FOR cust_rec IN (SELECT c.CUSTID, c.FNAME, c.LNAME, c.DOB, c.ADDRESS, ct.CONTACTS
+                   FROM CUSTOMER c
+                   LEFT JOIN CUST_CONTACTS ct ON c.CUSTID = ct.CUSTID
+                   ORDER BY c.CUSTID)
+  LOOP
+    DBMS_OUTPUT.PUT_LINE('Customer ID: ' || cust_rec.CUSTID);
+    DBMS_OUTPUT.PUT_LINE('Name: ' || cust_rec.FNAME || ' ' || cust_rec.LNAME);
+    DBMS_OUTPUT.PUT_LINE('Date of Birth: ' || cust_rec.DOB);
+    DBMS_OUTPUT.PUT_LINE('Address: ' || cust_rec.ADDRESS);
+    DBMS_OUTPUT.PUT_LINE('Contact: ' || cust_rec.CONTACTS);
+    DBMS_OUTPUT.PUT_LINE('----------------------------------------------------');
+  END LOOP;
+  EXCEPTION
+	WHEN no_data_found THEN
+  		DBMS_OUTPUT.PUT_LINE('!! no such record exits !! ');
+	WHEN TOO_MANY_ROWS THEN
+  		DBMS_OUTPUT.PUT_LINE('!! TOO MANY ROWS RECORD !! ');
+	WHEN others THEN 
+  		DBMS_OUTPUT.PUT_LINE(' !!  ERROR  !! ');
+END;
+/
+BEGIN
+  display_customer_contacts;
+END;
+/
+
+
+
+
+
+
+
+
+-- LIST OF ARTISTS WITH THEIR ARTWORKS
+CREATE OR REPLACE PROCEDURE display_all_artist_artworks IS
+BEGIN
+	FOR artwork_rec IN (SELECT A.ARTISTID , A.FNAME, A.LNAME, AR.ARTID, AR.TITLE, AR.TYPE_OF_ART, AR.YEAR, AR.PRICE FROM ARTIST A LEFT OUTER JOIN ARTWORK AR ON A.ARTISTID=AR.ARTISTID  ) 
+    LOOP
+    	DBMS_OUTPUT.PUT_LINE('Artist ID: ' || ARTWORK_REC.ARTISTID);
+		DBMS_OUTPUT.PUT_LINE('Artist NAME: ' || ARTWORK_REC.FNAME||' '||ARTWORK_REC.LNAME);
+		DBMS_OUTPUT.PUT_LINE('Artwork ID: ' || artwork_rec.ARTID);
+		DBMS_OUTPUT.PUT_LINE('Artwork Title: ' || artwork_rec.title);
+    	DBMS_OUTPUT.PUT_LINE('TYPE OF ART: ' || artwork_rec.TYPE_OF_ART);
+    	DBMS_OUTPUT.PUT_LINE('YEAR: ' || artwork_rec.YEAR);
+    	DBMS_OUTPUT.PUT_LINE('PRICE: ' || artwork_rec.PRICE);
+    	DBMS_OUTPUT.PUT_LINE('--------------------------------------');
+  END LOOP;
+  EXCEPTION
+	WHEN no_data_found THEN
+  		DBMS_OUTPUT.PUT_LINE('!! no such record exits !! ');
+	WHEN TOO_MANY_ROWS THEN
+  		DBMS_OUTPUT.PUT_LINE('!! TOO MANY ROWS RECORD !! ');
+	WHEN others THEN 
+  		DBMS_OUTPUT.PUT_LINE(' !!  ERROR  !! ');
+END;
+begin
+    DISPLAY_ALL_ARTIST_ARTWORKS;
+end;
+/
+
+
+
+
+
+
+-- LIST OF ARTISTS WITH THIER ARTWORKS ACCORDING TO SPECIFIC ID
+
+CREATE OR REPLACE PROCEDURE display_artist_artworks (artist_id IN varchar) IS
+BEGIN
+  FOR artwork_rec IN (SELECT A.ARTISTID , A.FNAME, A.LNAME, AR.ARTID, AR.TITLE, AR.TYPE_OF_ART, AR.YEAR, AR.PRICE FROM ARTIST A LEFT OUTER JOIN ARTWORK AR ON A.ARTISTID=AR.ARTISTID WHERE A.ARTISTID=artist_id )
+    LOOP
+    	DBMS_OUTPUT.PUT_LINE('Artist ID: ' || ARTWORK_REC.ARTISTID);
+		DBMS_OUTPUT.PUT_LINE('Artist NAME: ' || ARTWORK_REC.FNAME||' '||ARTWORK_REC.LNAME);
+		DBMS_OUTPUT.PUT_LINE('Artwork ID: ' || artwork_rec.ARTID);
+		DBMS_OUTPUT.PUT_LINE('Artwork Title: ' || artwork_rec.title);
+    	DBMS_OUTPUT.PUT_LINE('TYPE OF ART: ' || artwork_rec.TYPE_OF_ART);
+    	DBMS_OUTPUT.PUT_LINE('YEAR: ' || artwork_rec.YEAR);
+    	DBMS_OUTPUT.PUT_LINE('PRICE: ' || artwork_rec.PRICE);
+    	DBMS_OUTPUT.PUT_LINE('--------------------------------------');
+  END LOOP;
+  EXCEPTION
+	WHEN no_data_found THEN
+  		DBMS_OUTPUT.PUT_LINE('!! no such record exits !! ');
+	WHEN TOO_MANY_ROWS THEN
+  		DBMS_OUTPUT.PUT_LINE('!! TOO MANY ROWS RECORD !! ');
+	WHEN others THEN 
+  		DBMS_OUTPUT.PUT_LINE(' !!  ERROR  !! ');
+END;
+/
+declare
+	artist_id varchar(20);
+begin
+	artist_id:='ART9';
+	display_artist_artworks(artist_id);
+end;
+/
+
+
+
+
+
+
+
+-- LIST OF GALLERY WITH THEIR ARTISTS
+DECLARE 
+    CURSOR ARTIST_INFO IS select  G.GID,G.GNAME,G.LOCATION, A.ARTISTID,A.fname, A.LNAME from GALLERY G LEFT OUTER JOIN ARTIST A ON G.GID=A.GID;
+    REC1 ARTIST_INFO%ROWTYPE;
+BEGIN
+	OPEN ARTIST_INFO;
+	LOOP
+        FETCH ARTIST_INFO INTO REC1;
+        EXIT WHEN ARTIST_INFO%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('ARTISTS IN GALLERY: '||REC1.GID||' '||REC1.GNAME||' '||REC1.LOCATION);
+        DBMS_OUTPUT.PUT_LINE('----------------------------------------------------------');
+        DBMS_OUTPUT.PUT_LINE('ARTIST ID: '||REC1.ARTISTID);
+        DBMS_OUTPUT.PUT_LINE('ARTIST NAME: '||REC1.fname||REC1.LNAME);
+        DBMS_OUTPUT.PUT_LINE('----------------------------------------------------------');
+	END LOOP;
+	IF ARTIST_INFO%NOTFOUND AND ARTIST_INFO%ROWCOUNT=0 THEN
+    	RAISE NO_DATA_FOUND;
+	END IF;
+	EXCEPTION 
+        WHEN NO_DATA_FOUND THEN
+			DBMS_OUTPUT.PUT_LINE('!!NO SUCH RECORD EXISTS!!');    
+	CLOSE ARTIST_INFO;
+END;
+/
+
+
+
+
+
+
+
+-- LIST OF GALLERY WITH THEIR ARTISTS ACCORDING TO SPECIFIC ID 
+DECLARE
+    ARTIST_ID VARCHAR2(20);
+    CURSOR ARTIST_INFO(ARTIST_ID VARCHAR) IS select  G.GID,G.GNAME,G.LOCATION, A.ARTISTID,A.fname, A.LNAME from GALLERY G LEFT OUTER JOIN ARTIST A ON G.GID=A.GID WHERE A.ARTISTID=ARTIST_ID;
+    REC1 ARTIST_INFO%ROWTYPE;
+BEGIN
+    ARTIST_ID:=&artist_id;
+	OPEN ARTIST_INFO(ARTIST_ID);
+	LOOP
+        FETCH ARTIST_INFO INTO REC1;
+        EXIT WHEN ARTIST_INFO%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('ARTISTS IN GALLERY: '||REC1.GID||' '||REC1.GNAME||' '||REC1.LOCATION);
+        DBMS_OUTPUT.PUT_LINE('----------------------------------------------------------');
+        DBMS_OUTPUT.PUT_LINE('ARTIST ID: '||REC1.ARTISTID);
+        DBMS_OUTPUT.PUT_LINE('ARTIST NAME: '||REC1.fname||REC1.LNAME);
+        DBMS_OUTPUT.PUT_LINE('----------------------------------------------------------');
+	END LOOP;
+	IF ARTIST_INFO%NOTFOUND AND ARTIST_INFO%ROWCOUNT=0 THEN
+    	RAISE NO_DATA_FOUND;
+	END IF;
+	EXCEPTION 
+        WHEN NO_DATA_FOUND THEN
+			DBMS_OUTPUT.PUT_LINE('!!NO SUCH RECORD EXISTS!!');    
+	CLOSE ARTIST_INFO;
+END;
+/
+
+
+
+
+
+
+-- LIST OF EXHIBITIONS WITH THEIR GALLERY HAVING ARTISTS
+
+DECLARE
+    CURSOR CUR_EXHIBITION IS SELECT e.eid, e.startdate, e.enddate, a.artistid, a.fname,a.lname, g.gid, g.gname, g.location
+      FROM  artist a
+      JOIN exhibition e ON e.eid = a.eid
+      JOIN GALLERY g ON g.gid = a.gid;
+    exhibition_id EXHIBITION.eid%TYPE;
+    exhibition_start_date EXHIBITION.startdate%TYPE;
+    exhibition_end_date EXHIBITION.enddate%TYPE;
+    artist_id ARTIST.artistid%TYPE;
+    artist_fname ARTIST.fname%TYPE;
+	artist_lname ARTIST.lname%TYPE;
+    gallery_id GALLERY.gid%TYPE;
+    gallery_name GALLERY.gname%TYPE;
+	gallery_location GALLERY.location%TYPE;
+BEGIN
+   OPEN CUR_EXHIBITION;
+   LOOP
+       	FETCH CUR_EXHIBITION INTO
+      	exhibition_id, exhibition_start_date, exhibition_end_date, artist_id,artist_fname, artist_lname, gallery_id, gallery_name, gallery_location;
+		exit when cur_exhibition%notfound;
+        DBMS_OUTPUT.PUT_LINE('Gallery ID: ' || gallery_id || ',  Gallery Name: ' || gallery_name|| ',  Gallery Location: ' || gallery_location);
+		DBMS_OUTPUT.PUT_LINE('Exhibition ID: ' || exhibition_id || ',   Start Date: ' || exhibition_start_date || ', End Date: ' || exhibition_end_date);
+        DBMS_OUTPUT.PUT_LINE( 'Artist ID: ' || artist_id || ',  Artist Name: ' || artist_fname || artist_lname );
+        DBMS_OUTPUT.PUT_LINE('..............................................');
+   END LOOP;
+	IF CUR_EXHIBITION%NOTFOUND AND CUR_EXHIBITION%ROWCOUNT=0 THEN
+    	RAISE NO_DATA_FOUND;
+	END IF;
+	EXCEPTION 
+        WHEN NO_DATA_FOUND THEN
+			DBMS_OUTPUT.PUT_LINE('!!NO SUCH RECORD EXISTS!!');
+   CLOSE cur_exhibition;
+END;
+/
+
+
+
+
+
+
+
+-- FROM WHICH GALLERY , CUSTOMER BOUGHT WHICH ARTWORK
+declare
+	CURSOR cur_customer is 
+        SELECT BUYS.CUSTID,customer.fname,customer.lname, ARTWORK.ARTID, GALLERY.GID, GALLERY.GNAME, GALLERY.LOCATION, ARTWORK.TITLE, ARTWORK.YEAR, ARTWORK.PRICE, ARTWORK.TYPE_OF_ART
+        FROM CUSTOMER
+        INNER JOIN BUYS ON BUYS.CUSTID=CUSTOMER.CUSTID
+        INNER JOIN ARTWORK ON BUYS.ARTID = ARTWORK.ARTID
+        INNER JOIN GALLERY ON ARTWORK.GID = GALLERY.GID;
+    custid VARCHAR(20);
+    cust_fname varchar(20);
+    cust_lname varchar(20);
+    artid VARCHAR(20);
+    gid VARCHAR(20);
+    gname VARCHAR(20);
+    title VARCHAR(20);
+	location VARCHAR(20);
+    year int;
+    price int;
+    type_of_art VARCHAR(20);
+ BEGIN
+	open cur_customer;
+    LOOP
+        fetch cur_customer into custid,cust_fname,cust_lname,artid,gid,gname,title,location,year,price,type_of_art;
+    	EXIT WHEN CUR_CUSTOMER%NOTFOUND;
+      	DBMS_OUTPUT.PUT_LINE('CUSTOMER ID:' || custid||', CUSTOMER NAME: '||cust_fname||' '||cust_lname );
+		DBMS_OUTPUT.PUT_LINE('ART ID: ' || artid || ', Artwork Title: ' || title || ', Year: ' || year || ', Price: ' || price || ', Type of Art: ' || type_of_art);
+		DBMS_OUTPUT.PUT_LINE('GALLERY ID:' || gid ||  ', Gallery Name: ' || gname ||  ', Gallery Location: ' || location);
+		DBMS_OUTPUT.PUT_LINE('------------------------------------------------------------------');
+	end loop;
+	IF cur_customer%NOTFOUND AND cur_customer%ROWCOUNT=0 THEN
+    	RAISE NO_DATA_FOUND;
+	END IF;
+	EXCEPTION 
+        WHEN NO_DATA_FOUND THEN
+			DBMS_OUTPUT.PUT_LINE('!!NO SUCH RECORD EXISTS!!');
+	CLOSE CUR_CUSTOMER;
+end;
+/
+
+
+
+
+
+
+-- RELATION BETWEEN  GALLERY , EXHIBITION , ARTWORK, ARTIST TABLES
+DECLARE 
+     CURSOR myCursor is
+    SELECT G.GID, G.GNAME, G.LOCATION, E.EID, E.STARTDATE, E.ENDDATE, 
+    A.ARTID, A.TITLE, A.YEAR, A.TYPE_OF_ART, A.PRICE, 
+    AR. ARTISTID, AR.FNAME, AR.LNAME, AR.BIRTHPLACE
+    FROM GALLERY G
+    JOIN EXHIBITION E ON G.GID = E.GID
+    JOIN ARTWORK A ON E.EID = A.EID
+    JOIN ARTIST AR ON A.ARTISTID = AR.ARTISTID;
+    gid VARCHAR(20);
+    gname VARCHAR(20);
+    location VARCHAR(20); 
+    eid VARCHAR(20); 
+    startdate DATE; 
+    enddate DATE;
+    artid VARCHAR(20);
+    title VARCHAR(20);
+    year INT;
+    type_of_art VARCHAR(20);
+    price INT;
+    artistid VARCHAR(20);
+    fname VARCHAR(20); 
+    lname VARCHAR(20);
+    birthplace VARCHAR(20);
+begin    
+	OPEN myCursor;
+	loop
+    FETCH myCursor INTO gid, gname, location, eid, startdate, enddate, artid, title, year, type_of_art, price, artistid, fname, lname, birthplace;
+	EXIT WHEN myCursor%NOTFOUND;
+    DBMS_OUTPUT.PUT_LINE( 'Gallery ID: ' ||gid ||', Gallery Name: ' ||gname || ', Location: ' ||location);
+    DBMS_OUTPUT.PUT_LINE('Exhibition ID: ' ||eid || ', Start Date: ' ||startdate|| ', End Date: '||enddate);
+    DBMS_OUTPUT.PUT_LINE('Artwork ID: ' ||artid ||', Title: '||title || ', Year: '||year||', Type of Art: '||type_of_art ||', Price: ' ||price);
+    DBMS_OUTPUT.PUT_LINE( 'Artist ID: ' ||artistid ||', Name: ' ||fname || ' ' || lname || ', Birthplace: ' || birthplace);
+    DBMS_OUTPUT.PUT_LINE('-------------------------------------------------------------------');
+    end loop;
+	IF myCursor%NOTFOUND AND myCursor%ROWCOUNT=0 THEN
+    	RAISE NO_DATA_FOUND;
+	END IF;
+	EXCEPTION 
+        WHEN NO_DATA_FOUND THEN
+			DBMS_OUTPUT.PUT_LINE('!!NO SUCH RECORD EXISTS!!');
+	CLOSE myCursor;
+end;
+/
+
+ 
+
+
+
+
+
+-- RELATION BETWEEN  GALLERY , EXHIBITION , ARTWORK, ARTIST TABLES, CUSTOMER 
+
+DECLARE 
+     CURSOR myCursor1 is
+    SELECT G.GID, G.GNAME, G.LOCATION, E.EID, E.STARTDATE, E.ENDDATE, 
+    A.ARTID, A.TITLE, A.YEAR, A.TYPE_OF_ART, A.PRICE, 
+    AR. ARTISTID, AR.FNAME, AR.LNAME, AR.BIRTHPLACE,
+    C.CUSTID, C.FNAME, C.LNAME, C.ADDRESS, C.DOB
+    FROM GALLERY G
+    JOIN EXHIBITION E ON G.GID = E.GID
+    JOIN ARTWORK A ON E.EID = A.EID
+    JOIN ARTIST AR ON A.ARTISTID = AR.ARTISTID
+    JOIN CUSTOMER C ON G.GID= C.GID;
+    gid VARCHAR(20);
+    gname VARCHAR(20);
+    location VARCHAR(20); 
+    eid VARCHAR(20); 
+    startdate DATE; 
+    enddate DATE;
+    artid VARCHAR(20);
+    title VARCHAR(20);
+    year INT;
+    type_of_art VARCHAR(20);
+    price INT;
+    artistid VARCHAR(20);
+    fname VARCHAR(20); 
+    lname VARCHAR(20);
+    birthplace VARCHAR(20);
+	custid VARCHAR(20);
+	cfname VARCHAR(20);
+	clname VARCHAR(20);
+	caddress VARCHAR(20);
+	cdob date;
+begin    
+	OPEN myCursor1;
+	loop
+    FETCH myCursor1 INTO gid, gname, location, eid, startdate, enddate, artid, title, year, type_of_art, price, artistid, fname, lname, birthplace,custid,cfname,clname,caddress,cdob;
+	EXIT WHEN myCursor1%NOTFOUND;
+    DBMS_OUTPUT.PUT_LINE( 'Gallery ID: ' ||gid ||', Gallery Name: ' ||gname || ', Location: ' ||location);
+    DBMS_OUTPUT.PUT_LINE('Exhibition ID: ' ||eid || ', Start Date: ' ||startdate|| ', End Date: '||enddate);
+    DBMS_OUTPUT.PUT_LINE('Artwork ID: ' ||artid ||', Title: '||title || ', Year: '||year||', Type of Art: '||type_of_art ||', Price: ' ||price);
+    DBMS_OUTPUT.PUT_LINE( 'Artist ID: ' ||artistid ||', Name: ' ||fname || ' ' || lname || ', Birthplace: ' || birthplace);
+    DBMS_OUTPUT.PUT_LINE( 'Customer ID: ' ||custid ||', Name: ' ||cfname || ' ' || clname || ', Address: ' || caddress || ', Date of Birth: ' || cdob);
+    DBMS_OUTPUT.PUT_LINE('--------------------------------------------------------------------------------------------------------------');
+    end loop;
+	IF myCursor1%NOTFOUND AND myCursor1%ROWCOUNT=0 THEN
+    	RAISE NO_DATA_FOUND;
+	END IF;
+	EXCEPTION 
+        WHEN NO_DATA_FOUND THEN
+			DBMS_OUTPUT.PUT_LINE('!!NO SUCH RECORD EXISTS!!');
+	CLOSE myCursor1;
+end;
+/
+
+
+
+
+-- DISPLAY ARTIST DATA ACCORDING TO STYLE ENTERED
+CREATE OR REPLACE PROCEDURE display_artwork_by_style (p_style IN artist_styles.style%TYPE) AS
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('ARTWORK STYLE : '||P_STYLE);
+ DBMS_OUTPUT.PUT_LINE('----------------------------------------------');
+  FOR a IN (
+    SELECT artwork.artid, artwork.title, artwork.year, artist.fname, artist.lname
+    FROM artwork
+    JOIN artist ON artwork.artistid = artist.artistid
+    JOIN artist_styles ON artist_styles.artistid = artist.artistid
+    WHERE artist_styles.style = p_style
+  ) LOOP
+    DBMS_OUTPUT.PUT_LINE('Artwork ID: ' || a.artid);
+    DBMS_OUTPUT.PUT_LINE('Title: ' || a.title);
+    DBMS_OUTPUT.PUT_LINE('Year Created: ' || a.year);
+    DBMS_OUTPUT.PUT_LINE('Artist Name: ' || a.fname || ' ' || a.lname);
+    DBMS_OUTPUT.PUT_LINE('----------------------------------------------');
+  END LOOP;
+  EXCEPTION
+	WHEN no_data_found THEN
+  		DBMS_OUTPUT.PUT_LINE('!! no such record exits !! ');
+	WHEN TOO_MANY_ROWS THEN
+  		DBMS_OUTPUT.PUT_LINE('!! TOO MANY ROWS RECORD !! ');
+	WHEN others THEN 
+  		DBMS_OUTPUT.PUT_LINE(' !!  ERROR  !! ');
+END;
+/
+declare
+    style varchar(20);
+BEGIN
+    style:=&style;
+  display_artwork_by_style(style);
+END;
+/
+
+
+
+
+
+
+-- ARTIST AND NUMBER OF ARTWORKS
+DECLARE
+    CURSOR c_artist IS
+        SELECT A.FNAME,A.ARTISTID,A.LNAME, COUNT(B.ARTID) AS NUM_ARTWORKS 
+        FROM ARTIST A
+        LEFT OUTER JOIN ARTWORK B ON A.ARTISTID=B.ARTISTID GROUP BY A.ARTISTID,A.FNAME,A.LNAME;
+  	REC2 C_ARTIST%ROWTYPE;
+BEGIN
+	OPEN c_artist;
+	LOOP
+		fetch c_artist into REC2;
+		exit when c_artist%notfound;
+		DBMS_OUTPUT.PUT_LINE('Name: ' || REC2.fname ||' '|| REC2.lname  || ', Artwork Count: ' || REC2.NUM_ARTWORKS);
+	END LOOP;
+	close c_artist;
+END;
+/
+
+
+--  CUSTOMER AND  THEIR  BUYS 
+DECLARE 
+    v_custid VARCHAR(20);
+    v_artid VARCHAR(20);
+    v_title VARCHAR(20);
+    v_fname VARCHAR(20);
+    v_lname VARCHAR(20);
+    CURSOR c_buy_info IS
+      SELECT b.CUSTID, b.ARTID, a.TITLE, ar.FNAME, ar.LNAME
+      FROM BUYS b
+      JOIN ARTWORK a ON b.ARTID = a.ARTID
+      JOIN ARTIST ar ON a.ARTISTID = ar.ARTISTID
+      ORDER BY b.CUSTID;
+BEGIN
+  	OPEN c_buy_info ; 
+    LOOP
+    FETCH c_buy_info INTO   v_custid , v_artid , v_title , v_fname , v_lname ; 
+    EXIT WHEN c_buy_info%NOTFOUND; 
+    DBMS_OUTPUT.PUT_LINE( 'CUSTOMER ID: ' ||v_custid); 
+    DBMS_OUTPUT.PUT_LINE('ARTWORK ID: ' ||v_artid);
+    DBMS_OUTPUT.PUT_LINE('TITLE: ' || v_title ); 
+    DBMS_OUTPUT.PUT_LINE( 'ARTIST NAME: ' ||v_fname ||' ' || v_lname); 
+    DBMS_OUTPUT.PUT_LINE('-------------------------------------------------------------------');
+ 	END LOOP;
+    IF c_buy_info%NOTFOUND AND c_buy_info%ROWCOUNT=0 THEN 
+          RAISE NO_DATA_FOUND;
+    end if ;       
+   EXCEPTION
+   		WHEN NO_DATA_FOUND THEN
+   			DBMS_OUTPUT.PUT_LINE('!! no such record exists !! ');
+	CLOSE c_buy_info ;
+END;
+/
+
+
+
+
+
+--  CUSTOMER AND  THEIR  BUYS ACCORDING TO SPECIFIC ARTWORK
+DECLARE 
+    v_custid VARCHAR(20);
+    v_artid VARCHAR(20);
+    v_title VARCHAR(20);
+    v_fname VARCHAR(20);
+    v_lname VARCHAR(20);
+    CURSOR c_buy_info(ART_ID VARCHAR) IS
+      SELECT b.CUSTID, b.ARTID, a.TITLE, ar.FNAME, ar.LNAME
+      FROM BUYS b
+      JOIN ARTWORK a ON b.ARTID = a.ARTID
+      JOIN ARTIST ar ON a.ARTISTID = ar.ARTISTID
+      WHERE b.ARTID=ART_ID;
+BEGIN
+	v_artid:='AW24';
+  	OPEN c_buy_info(v_artid) ; 
+    LOOP
+    FETCH c_buy_info INTO   v_custid , v_artid , v_title , v_fname , v_lname ; 
+    EXIT WHEN c_buy_info%NOTFOUND; 
+    DBMS_OUTPUT.PUT_LINE( 'CUSTOMER ID: ' ||v_custid); 
+    DBMS_OUTPUT.PUT_LINE('ARTWORK ID: ' ||v_artid);
+    DBMS_OUTPUT.PUT_LINE('TITLE: ' || v_title ); 
+    DBMS_OUTPUT.PUT_LINE( 'ARTIST NAME: ' ||v_fname ||' ' || v_lname); 
+    DBMS_OUTPUT.PUT_LINE('-------------------------------------------------------------------');
+ 	END LOOP;
+    IF c_buy_info%NOTFOUND AND c_buy_info%ROWCOUNT=0 THEN 
+          RAISE NO_DATA_FOUND;
+    end if ;       
+   EXCEPTION
+   		WHEN NO_DATA_FOUND THEN
+   			DBMS_OUTPUT.PUT_LINE('!! no such record exists !! ');
+	CLOSE c_buy_info ;
+END;
+/
+
+
+
+-- CUSTOMER AND THEIR NUMBER OF BUYS 
+
+DECLARE 
+  CURSOR cust_buys IS 
+    SELECT C.FNAME,C.LNAME, COUNT(B.ARTID) AS NUM_BUYS
+    FROM CUSTOMER C
+    LEFT JOIN BUYS B ON C.CUSTID = B.CUSTID
+    GROUP BY C.FNAME;
+   REC cust_buys%ROWTYPE;
+BEGIN
+    OPEN cust_buys;
+    LOOP
+     FETCH cust_buys INTO REC;
+	EXIT WHEN cust_buys%NOTFOUND;
+    DBMS_OUTPUT.PUT_LINE(REC.FNAME||' ' || REC.LNAME || ' - ' || REC.NUM_BUYS || ' buys');
+  END LOOP;
+    IF cust_buys%NOTFOUND AND cust_buys%ROWCOUNT=0 THEN 
+          RAISE NO_DATA_FOUND;
+    end if ;       
+   EXCEPTION
+   		WHEN NO_DATA_FOUND THEN
+   			DBMS_OUTPUT.PUT_LINE('!! no such record exists !! ');
+CLOSE cust_buys;
+END;
+
+
+
+
+
+--CURSOR TO DISPLAY THE TOTAL AMOUNT SPENT BY CUSTOMER
+
+
+
+DECLARE 
+  CURSOR cust_buys IS 
+    SELECT C.FNAME,C.LNAME, SUM(A.PRICE) AS TOTAL_PRICE
+    FROM CUSTOMER C
+   JOIN BUYS B ON C.CUSTID = B.CUSTID
+    JOIN ARTWORK A ON B.ARTID=A.ARTID
+    
+    GROUP BY C.FNAME,C.LNAME;
+   REC cust_buys%ROWTYPE;
+BEGIN
+    OPEN cust_buys;
+    LOOP
+     FETCH cust_buys INTO REC;
+	EXIT WHEN cust_buys%NOTFOUND;
+    DBMS_OUTPUT.PUT_LINE(REC.FNAME||' ' || REC.LNAME || ' - ' || REC.TOTAL_PRICE );
+  END LOOP;
+    IF cust_buys%NOTFOUND AND cust_buys%ROWCOUNT=0 THEN 
+          RAISE NO_DATA_FOUND;
+    end if ;       
+   EXCEPTION
+   		WHEN NO_DATA_FOUND THEN
+   			DBMS_OUTPUT.PUT_LINE('!! no such record exists !! ');
+CLOSE cust_buys;
+END;
+/
+
+
+
+
+
+-- DELETE DATA FROM TABLE 
+
+
+CREATE OR REPLACE TRIGGER DELETION
+	BEFORE DELETE  ON GALLERY
+	FOR EACH ROW
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Data deleted');
+	DBMS_OUTPUT.PUT_LINE('OLD NAME '||:OLD.GNAME);
+END;
+/
+create or replace procedure delete_from_GALLERY ( a in varchar) is
+begin 
+	delete from gallery where gid=a;
+end;
+/
+DECLARE
+	GID VARCHAR(20);
+begin
+	GID:=&GID;
+	delete_from_GALLERY(GID);
+END;
+/
+
+
+
+
+
+
+
+
+-- UPDATION OF DATA
+
+CREATE OR REPLACE TRIGGER UPDATION
+	BEFORE UPDATE  ON GALLERY
+	FOR EACH ROW
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Data Updated');
+	DBMS_OUTPUT.PUT_LINE('OLD NAME '||:OLD.GNAME);
+	DBMS_OUTPUT.PUT_LINE('NEW NAME '||:NEW.GNAME);
+END;
+/
+create or replace procedure UPDATE_GALLERY ( NAME in varchar, A IN VARCHAR) is
+begin 
+	UPDATE GALLERY SET GNAME=NAME WHERE GID=A;
+end;
+/
+DECLARE
+	GNAME VARCHAR(20);
+	GID VARCHAR(20);
+begin
+	GID:=&GID;
+	GNAME:=&NEW_GNAME;
+	UPDATE_GALLERY(GNAME,GID);
+END;
+/
+
+
+
+
+
+
+-- INSERTION OF DATA
+
+CREATE OR REPLACE TRIGGER INSERTION
+	BEFORE INSERT  ON GALLERY
+	FOR EACH ROW
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Data Inserted');
+    DBMS_OUTPUT.PUT_LINE('ID '||:NEW.GID);
+    DBMS_OUTPUT.PUT_LINE('NAME '||:NEW.GNAME);
+    DBMS_OUTPUT.PUT_LINE('LOCATION '||:NEW.LOCATION);
+END;
+/
+create or replace procedure INSERT_IN_GALLERY ( A in varchar,B IN VARCHAR,C IN VARCHAR) is
+    begin 
+    	INSERT INTO GALLERY VALUES(A,B,C);
+    end;
+/
+DECLARE
+    GID VARCHAR(20);
+    GNAME VARCHAR(20);
+    LOCATION VARCHAR(20);
+BEGIN
+    GID:='AM1345';
+    GNAME:='PRIYANKA BEDI';
+    LOCATION:='PANCHKULA';
+	INSERT_IN_GALLERY(GID,GNAME,LOCATION);
+END;
+/
+
